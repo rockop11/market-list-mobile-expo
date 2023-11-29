@@ -4,13 +4,13 @@ import { View, Text } from 'react-native'
 
 export function ListScreen() {
 
-  useEffect(() => {
-    const auth = getAuth()
+  // useEffect(() => {
+  //   const auth = getAuth()
 
-    onAuthStateChanged(auth, (user) => {
-      console.log("list screen", JSON.stringify(user, null, 2))
-    })
-  }, [])
+  //   onAuthStateChanged(auth, (user) => {
+  //     console.log("list screen", JSON.stringify(user, null, 2))
+  //   })
+  // }, [])
 
   return (
     <View>

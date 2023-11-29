@@ -15,10 +15,12 @@ export function LoginScreen() {
   return (
     <ScrollView>
       <View style={styles.container}>
-      <Text style={styles.title}>Ingresa</Text>
+        <Text style={styles.title}>Ingresa</Text>
         <LoginForm />
-        <Text>No tenes cuenta?</Text>
-        <Text onPress={goToRegister}>Regsitrate aca</Text>
+        <View style={styles.textContainer}>
+          <Text>No tenes cuenta? </Text>
+          <Text onPress={goToRegister} style={styles.register}>Regsitrate aca</Text>
+        </View>
       </View>
     </ScrollView>
   )

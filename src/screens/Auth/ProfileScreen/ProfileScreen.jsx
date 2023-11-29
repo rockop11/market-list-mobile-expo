@@ -1,18 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { View, Text } from 'react-native'
-import { Button, Avatar } from "@rneui/themed"
-import { auth } from '../../../utils/firebase'
+import { Button } from "@rneui/themed"
+import { signOut, getAuth } from "firebase/auth"
+import { UserInfo } from '../../../components'
 import Toast from 'react-native-toast-message'
-import { signOut } from "firebase/auth"
+import { styles } from "./ProfileScreen.styles"
+
+import { LoadingModal } from '../../../components'
 
 export function ProfileScreen() {
 
   const navigation = useNavigation()
-  // const [user, setUser] = useState(null)
+
+  const [_, setReload] = useState(false)
+  const [loading, setLoading] = useState()
+  const [loadingText, setLoadingText] = useState("")
 
   const handleLogout = async () => {
     try {
+      const auth = getAuth()
       await signOut(auth)
       navigation.navigate('Login')
     } catch (error) {
@@ -24,14 +31,21 @@ export function ProfileScreen() {
     }
   }
 
-  // useEffect(() => {
-  //   // setUser(auth.currentUser)
-  // }, [])
+  const onReload = () => {
+    setReload((prevState) => !prevState)
+  }
 
   return (
-    <View>
-      <Text>Bienvenido</Text>
-      <Button title='Logout' onPress={handleLogout} />
+    <View style={styles.container}>
+      <UserInfo
+        onReload={onReload}
+        setLoading={setLoading}
+        setLoadingText={setLoadingText}
+        loadingText={loadingText}
+        loading={loading}
+      />
+
+      <Button title='Logout' onPress={handleLogout} containerStyle={styles.button} />
     </View>
   )
 }

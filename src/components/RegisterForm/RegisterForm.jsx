@@ -24,6 +24,7 @@ export function RegisterForm() {
         await createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
         navigation.navigate('Login')
       } catch (error) {
+        console.log(error)
         Toast.show({
           type: "error",
           position: "bottom",
@@ -68,7 +69,7 @@ export function RegisterForm() {
         inputStyle={styles.input}
         containerStyle={styles.inputContainer}
         onChangeText={text => formik.setFieldValue("password", text)}
-        errorMessage={[formik.errors.password, formik.errors.repeatPassword]}
+        errorMessage={formik.errors.password}
       />
 
       <Input

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { onAuthStateChanged, getAuth } from "firebase/auth"
 import { LoginScreen, RegisterScreen, ProfileScreen } from "../screens"
-// import { auth } from "../utils/firebase"
+
 
 const Stack = createNativeStackNavigator()
 
@@ -15,7 +15,6 @@ export function AuthStack() {
 
         onAuthStateChanged(auth, (user) => {
             setUserLogged(user)
-            console.log("auth stack", JSON.stringify(user, null, 2))
         })
     }, [])
 
@@ -23,20 +22,20 @@ export function AuthStack() {
     return (
         <Stack.Navigator>
             {
-                userLogged ? (
+                userLogged && (
                     <Stack.Screen
                         name='Profile'
                         component={ProfileScreen}
                         options={{ title: "Perfil" }}
                     />
-                ) : (
-                    <Stack.Screen
-                        name='Login'
-                        component={LoginScreen}
-                        options={{ title: "Ingresa" }}
-                    />
                 )
             }
+
+            <Stack.Screen
+                name='Login'
+                component={LoginScreen}
+                options={{ title: "Ingresa" }}
+            />
 
             <Stack.Screen
                 name='Register'

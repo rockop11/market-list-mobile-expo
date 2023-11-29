@@ -11,5 +11,17 @@ export const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: "bold",
         textAlign: "center"
+    },
+    textContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+    },
+    register: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        // color: ""
     }
 })

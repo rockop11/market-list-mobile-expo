@@ -4,8 +4,8 @@ import { Button, Input } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import { initialValues, validationSchema } from './LoginForm.data';
-import { auth } from "../../utils/firebase"
-import { signInWithEmailAndPassword } from "firebase/auth"
+// import { auth } from "../../utils/firebase"
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import Toast from 'react-native-toast-message';
 import { styles } from './LoginForm.styles'
 
@@ -20,6 +20,7 @@ export function LoginForm() {
     validateOnChange: false,
     onSubmit: async (formValues) => {
       try {
+        const auth = getAuth()
         await signInWithEmailAndPassword(auth, formValues.email, formValues.password)
         navigation.navigate('Profile')
       } catch (error) {
