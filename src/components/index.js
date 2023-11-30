@@ -1,5 +1,5 @@
 export * from "./ChangeDisplayNameForm/ChangeDisplayNameForm"
-export * from './ChangeImageForm/ChangeImageForm'
+export * from "./ListForm/ListForm"
 export * from "./LoadingModal/LoadingModal"
 export * from "./LoginForm/LoginForm"
 export * from "./Modal/Modal"

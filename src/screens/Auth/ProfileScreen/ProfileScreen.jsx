@@ -7,8 +7,6 @@ import { UserInfo } from '../../../components'
 import Toast from 'react-native-toast-message'
 import { styles } from "./ProfileScreen.styles"
 
-import { LoadingModal } from '../../../components'
-
 export function ProfileScreen() {
 
   const navigation = useNavigation()

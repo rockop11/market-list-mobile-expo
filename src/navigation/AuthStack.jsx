@@ -22,26 +22,28 @@ export function AuthStack() {
     return (
         <Stack.Navigator>
             {
-                userLogged && (
+                userLogged ? (
                     <Stack.Screen
                         name='Profile'
                         component={ProfileScreen}
                         options={{ title: "Perfil" }}
                     />
+                ) : (
+                    <>
+                        <Stack.Screen
+                            name='Login'
+                            component={LoginScreen}
+                            options={{ title: "Ingresa" }}
+                        />
+
+                        <Stack.Screen
+                            name='Register'
+                            component={RegisterScreen}
+                            options={{ title: "Registro" }}
+                        />
+                    </>
                 )
             }
-
-            <Stack.Screen
-                name='Login'
-                component={LoginScreen}
-                options={{ title: "Ingresa" }}
-            />
-
-            <Stack.Screen
-                name='Register'
-                component={RegisterScreen}
-                options={{ title: "Registro" }}
-            />
         </Stack.Navigator>
     )
 }

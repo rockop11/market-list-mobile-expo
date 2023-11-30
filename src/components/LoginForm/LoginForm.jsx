@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { Button, Input } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import { initialValues, validationSchema } from './LoginForm.data';
-// import { auth } from "../../utils/firebase"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import Toast from 'react-native-toast-message';
 import { styles } from './LoginForm.styles'

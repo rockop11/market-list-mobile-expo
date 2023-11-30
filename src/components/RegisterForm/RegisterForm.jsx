@@ -24,7 +24,6 @@ export function RegisterForm() {
         await createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
         navigation.navigate('Login')
       } catch (error) {
-        console.log(error)
         Toast.show({
           type: "error",
           position: "bottom",
