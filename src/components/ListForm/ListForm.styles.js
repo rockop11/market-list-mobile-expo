@@ -17,10 +17,17 @@ export const styles = StyleSheet.create({
         marginVertical: 20
     },
     totalText: {
-        fontSize: 24
+        fontSize: 24,
+        fontWeight: 'bold',
     },
+    btnContainer: {
+        gap: 8
+    }, 
     btnDeleteList: {
         backgroundColor: 'red',
+        borderRadius: 10
+    },
+    btnSaveList: {
         borderRadius: 10
     },
     confirmModal: {
@@ -30,7 +37,11 @@ export const styles = StyleSheet.create({
     deleteBtn: {
         backgroundColor: 'red',
         borderRadius: 10
-    }, 
+    },
+    saveBtn: {
+        backgroundColor: '#02d31e',
+        borderRadius: 10
+    },
     cancelBtn: {
         borderRadius: 10
     }

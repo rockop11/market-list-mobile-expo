@@ -13,13 +13,14 @@ export function ListForm() {
     const [productList, setProductList] = useState([])
     const [totalPrice, setTotalPrice] = useState(0)
     const [showModal, setShowModal] = useState(false)
+    const [modalText, setModalText] = useState('')
+    const [buttonText, setButtonText] = useState('')
 
     const additionProductListPrice = (updatedProductList) => {
         const productPrices = updatedProductList.map(product => product.price)
         const totalPriceReducer = productPrices.reduce((total, price) => total + price, 0);
         setTotalPrice(totalPriceReducer)
     }
-
 
     const formik = useFormik({
         initialValues: initialValues(),
@@ -44,8 +45,23 @@ export function ListForm() {
         }
     })
 
-    const OpenCloseModal = () => {
+    const OpenCloseModal = (id) => {
         setShowModal(prevState => !prevState)
+
+        if (id === "delete") {
+            setModalText('Desea borrar la lista completa?')
+            setButtonText('Borrar lista')
+        }
+
+        if (id === 'save') {
+            setModalText('Desea guardar la lista?')
+            setButtonText('Guardar lista')
+        }
+    }
+
+    const saveListToDB = () => {
+        console.log("saved")
+        //almacenar en firebase
     }
 
     const deleteProducList = () => {
@@ -111,7 +127,10 @@ export function ListForm() {
                 {
                     productList.length > 0 && (
                         <>
-                            <Button title='Borrar lista' buttonStyle={styles.btnDeleteList} onPress={OpenCloseModal} />
+                            <View style={styles.btnContainer}>
+                                <Button title='Borrar lista' buttonStyle={styles.btnDeleteList} onPress={() => OpenCloseModal("delete")} />
+                                <Button title='Guardar lista' buttonStyle={styles.btnSaveList} onPress={() => OpenCloseModal("save")} />
+                            </View>
                             <Text style={styles.totalText}>Total  ${totalPrice}</Text>
                         </>
                     )
@@ -156,10 +175,17 @@ export function ListForm() {
             </ScrollView>
 
             <Modal show={showModal}>
-                <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>Desea borrar la lista completa?</Text>
+                <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>{modalText}</Text>
                 <View style={styles.confirmModal}>
-                    <Button title="Borrar lista" onPress={deleteProducList} buttonStyle={styles.deleteBtn} />
-                    <Button title='Cancelar' buttonStyle={styles.cancelBtn} onPress={OpenCloseModal} />
+                    <Button title={buttonText}
+                        onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : saveListToDB}
+                        buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
+                    />
+                    <Button
+                        title='Cancelar'
+                        buttonStyle={styles.cancelBtn}
+                        onPress={OpenCloseModal}
+                    />
                 </View>
             </Modal>
         </View>
