@@ -19,7 +19,8 @@ export function ListForm() {
     const additionProductListPrice = (updatedProductList) => {
         const productPrices = updatedProductList.map(product => product.price)
         const totalPriceReducer = productPrices.reduce((total, price) => total + price, 0);
-        setTotalPrice(totalPriceReducer)
+        const localePrice = totalPriceReducer.toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        setTotalPrice(localePrice)
     }
 
     const formik = useFormik({
