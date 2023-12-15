@@ -15,10 +15,10 @@ export function validationSchema() {
             .required('el email es requerido'),
         password: Yup.string()
             .required('debe completar la contraseña')
-            .length(6, "demasiado corta"),
+            .min(6, "demasiado corta"),
         repeatPassword: Yup.string()
             .required("la contraseña es obligatoria")
-            .length(6, 'demasiado corta')
+            .min(6, 'demasiado corta')
             .oneOf([
                 Yup.ref("password")
             ], "las contraseñas no coinciden")
