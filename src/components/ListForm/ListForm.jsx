@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
 import { View, ScrollView } from 'react-native'
-import { Input, Button, Text, ListItem } from "@rneui/themed"
+import { Button, Text, ListItem } from "@rneui/themed"
 import { useFormik } from 'formik'
-import { initialValues, validationSchema } from './ListForm.data'
 import { Modal } from '../Modal/Modal'
+import { AddProductForm } from '../AddProductForm/AddProductForm';
+import { db } from "../../utils/firebase"
+import { doc, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth"
 import { styles } from "./ListForm.styles"
+import Toast from 'react-native-toast-message';
 
 export function ListForm() {
 
@@ -24,25 +26,11 @@ export function ListForm() {
     }
 
     const formik = useFormik({
-        initialValues: initialValues(),
-        validationSchema: validationSchema(),
-        validateOnChange: false,
-        onSubmit: (formValues, { resetForm }) => {
-            const stringToNumber = parseFloat(formValues.price)
-
-            const newProduct = {
-                id: uuidv4(),
-                productName: formValues.productName,
-                price: stringToNumber
-            }
-            setProductList(prevProductList => {
-                const updatedProductList = [...prevProductList]
-                updatedProductList.unshift(newProduct)
-                additionProductListPrice(updatedProductList)
-                return updatedProductList
-            })
-
-            resetForm({ values: { ...initialValues } })
+        initialValues: {
+            name: 'rocko'
+        },
+        onSubmit: async () => {
+            await saveListToDB()
         }
     })
 
@@ -60,9 +48,25 @@ export function ListForm() {
         }
     }
 
-    const saveListToDB = () => {
-        console.log("saved")
-        //almacenar en firebase
+    const saveListToDB = async () => {
+        try {
+            const auth = getAuth()
+            await setDoc(doc(db, "lists", `${auth.currentUser.email}`), { productList })
+            OpenCloseModal()
+            Toast.show({
+                type: "success",
+                position: "bottom",
+                text1: "se guardo la lista"
+            })
+            //armar objeto para almacenar en firebase
+        } catch (e) {
+            console.log(e)
+            Toast.show({
+                type: "error",
+                position: "bottom",
+                text1: "hubo un error"
+            })
+        }
     }
 
     const deleteProducList = () => {
@@ -81,48 +85,10 @@ export function ListForm() {
 
     return (
         <View>
-            <View style={styles.inputsContainer}>
-                <Input
-                    containerStyle={{ width: "48%" }}
-                    placeholder='Producto'
-                    value={formik.values.productName}
-                    leftIcon={{
-                        name: 'basket-plus',
-                        type: 'material-community',
-                        size: 24,
-                        color: '#848484',
-                    }}
-                    errorMessage={formik.errors.productName}
-                    onChangeText={(text) => formik.setFieldValue('productName', text)}
-                />
-                <Input
-                    containerStyle={{ width: '35%' }}
-                    placeholder='Precio'
-                    value={formik.values.price}
-                    leftIcon={{
-                        name: 'currency-usd',
-                        type: 'material-community',
-                        size: 24,
-                        color: '#848484',
-                        paddingBottom: 0
-                    }}
-                    errorMessage={formik.errors.price}
-                    onChangeText={(price) => formik.setFieldValue('price', price)}
-                />
-
-                <Button
-                    buttonStyle={styles.button}
-                    containerStyle={{ marginBottom: 20 }}
-                    icon={{
-                        name: 'plus',
-                        type: 'material-community',
-                        size: 20,
-                        color: 'white',
-                    }}
-                    onPress={formik.handleSubmit}
-                    onLoading={formik.isSubmitting}
-                />
-            </View>
+            <AddProductForm
+                setProductList={setProductList}
+                additionProductListPrice={additionProductListPrice}
+            />
 
             <View style={styles.totalContainer}>
                 {
@@ -179,8 +145,9 @@ export function ListForm() {
                 <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>{modalText}</Text>
                 <View style={styles.confirmModal}>
                     <Button title={buttonText}
-                        onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : saveListToDB}
                         buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
+                        onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : formik.handleSubmit}
+                        onLoading={formik.isSubmitting}
                     />
                     <Button
                         title='Cancelar'
