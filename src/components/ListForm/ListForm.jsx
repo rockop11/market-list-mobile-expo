@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Button, Text, ListItem } from "@rneui/themed"
-import { useFormik } from 'formik'
 import { Modal } from '../Modal/Modal'
 import { AddProductForm } from '../AddProductForm/AddProductForm';
 import { db } from "../../utils/firebase"
-import { doc, setDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 import { styles } from "./ListForm.styles"
 import Toast from 'react-native-toast-message';
@@ -17,6 +16,7 @@ export function ListForm() {
     const [showModal, setShowModal] = useState(false)
     const [modalText, setModalText] = useState('')
     const [buttonText, setButtonText] = useState('')
+    const [loader, setLoader] = useState(false)
 
     const additionProductListPrice = (updatedProductList) => {
         const productPrices = updatedProductList.map(product => product.price)
@@ -24,15 +24,6 @@ export function ListForm() {
         const localePrice = totalPriceReducer.toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         setTotalPrice(localePrice)
     }
-
-    const formik = useFormik({
-        initialValues: {
-            name: 'rocko'
-        },
-        onSubmit: async () => {
-            await saveListToDB()
-        }
-    })
 
     const OpenCloseModal = (id) => {
         setShowModal(prevState => !prevState)
@@ -49,18 +40,20 @@ export function ListForm() {
     }
 
     const saveListToDB = async () => {
+        setLoader(prevState => !prevState)
         try {
             const auth = getAuth()
-            await setDoc(doc(db, "lists", `${auth.currentUser.email}`), { productList })
+            await addDoc(collection(db, `${auth.currentUser.email}`), {
+                productList, date: new Date(Date.now()), total: totalPrice
+            });
+            setLoader(prevState => !prevState)
             OpenCloseModal()
             Toast.show({
                 type: "success",
                 position: "bottom",
                 text1: "se guardo la lista"
             })
-            //armar objeto para almacenar en firebase
         } catch (e) {
-            console.log(e)
             Toast.show({
                 type: "error",
                 position: "bottom",
@@ -144,16 +137,21 @@ export function ListForm() {
             <Modal show={showModal}>
                 <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>{modalText}</Text>
                 <View style={styles.confirmModal}>
-                    <Button title={buttonText}
-                        buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
-                        onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : formik.handleSubmit}
-                        onLoading={formik.isSubmitting}
-                    />
-                    <Button
-                        title='Cancelar'
-                        buttonStyle={styles.cancelBtn}
-                        onPress={OpenCloseModal}
-                    />
+                    {
+                        loader ? <Text>Guardando...</Text>
+                            : <>
+                                <Button title={buttonText}
+                                    buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
+                                    onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : saveListToDB}
+                                />
+                                <Button
+                                    title='Cancelar'
+                                    buttonStyle={styles.cancelBtn}
+                                    onPress={OpenCloseModal}
+                                />
+                            </>
+                    }
+
                 </View>
             </Modal>
         </View>
