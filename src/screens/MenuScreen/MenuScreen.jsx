@@ -37,6 +37,7 @@ export function MenuScreen() {
                 title='Mis listas'
                 containerStyle={styles.btnContainer}
                 buttonStyle={styles.button}
+                onPress={() => navigation.navigate('HistoryList')}
             />
         </View>
     )
