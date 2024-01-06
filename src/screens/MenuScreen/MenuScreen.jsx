@@ -34,7 +34,7 @@ export function MenuScreen() {
             />
 
             <Button
-                title='Mis listas'
+                title='Historial'
                 containerStyle={styles.btnContainer}
                 buttonStyle={styles.button}
                 onPress={() => navigation.navigate('HistoryList')}

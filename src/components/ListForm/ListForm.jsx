@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useFormik } from 'formik'
+import { initialValues, validationSchema } from "./ListForm.data"
 import { View, ScrollView } from 'react-native'
-import { Button, Text, ListItem } from "@rneui/themed"
+import { Button, Text, ListItem, Input } from "@rneui/themed"
 import { Modal } from '../Modal/Modal'
 import { AddProductForm } from '../AddProductForm/AddProductForm';
 import { db } from "../../utils/firebase"
@@ -10,6 +12,16 @@ import { styles } from "./ListForm.styles"
 import Toast from 'react-native-toast-message';
 
 export function ListForm() {
+
+    const formik = useFormik({
+        initialValues: initialValues(),
+        validationSchema: validationSchema(),
+        validateOnChange: false,
+        onSubmit: async (formValues, { resetForm }) => {
+            await saveListToDB()
+            resetForm({ values: { ...initialValues } })
+        }
+    })
 
     const [productList, setProductList] = useState([])
     const [totalPrice, setTotalPrice] = useState(0)
@@ -44,7 +56,10 @@ export function ListForm() {
         try {
             const auth = getAuth()
             await addDoc(collection(db, `${auth.currentUser.email}`), {
-                productList, date: new Date(Date.now()), total: totalPrice
+                productList,
+                date: new Date(Date.now()),
+                total: totalPrice,
+                title: formik.values.listTitle
             });
             setLoader(prevState => !prevState)
             OpenCloseModal()
@@ -136,13 +151,25 @@ export function ListForm() {
 
             <Modal show={showModal}>
                 <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>{modalText}</Text>
+                {
+                    modalText === 'Desea guardar la lista?' && (
+                        <Input
+                            placeholder='Titulo'
+                            errorMessage={formik.errors.listTitle}
+                            onChangeText={(listTitle) => formik.setFieldValue('listTitle', listTitle)}
+                            value={formik.values.productName}
+
+                        />
+                    )
+                }
                 <View style={styles.confirmModal}>
                     {
                         loader ? <Text>Guardando...</Text>
                             : <>
                                 <Button title={buttonText}
                                     buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
-                                    onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : saveListToDB}
+                                    onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : formik.handleSubmit}
+                                    onLoading={formik.isSubmitting}
                                 />
                                 <Button
                                     title='Cancelar'
@@ -151,7 +178,6 @@ export function ListForm() {
                                 />
                             </>
                     }
-
                 </View>
             </Modal>
         </View>

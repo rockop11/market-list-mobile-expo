@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
+import { ListItem, } from '@rneui/themed';
 import { getDocs, collection } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 import { db } from "../../utils/firebase"
@@ -34,14 +35,21 @@ export function HistoryListScreen() {
 
     return (
         <View>
-            <Text>historial</Text>
-            {
-                historyList.map((item, i) => (
-                    <View key={i}>
-                        <Text>$ {item.total} - {item.date}</Text>
-                    </View>
-                ))
-            }
+            <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', margin: 10 }}>Historial de Compras</Text>
+            <ScrollView>
+                <View style={styles.itemContainer}>
+                    {
+                        !historyList.length ? (<Text>Cargando...</Text>) : (
+                            historyList.map((item, i) => (
+                                <ListItem key={i} style={styles.listItem}>
+                                    <ListItem.Title style={{ fontWeight: "bold" }}>{item.title} - ${item.total}</ListItem.Title>
+                                    <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
+                                </ListItem>
+                            ))
+                        )
+                    }
+                </View>
+            </ScrollView>
         </View>
     )
 }
