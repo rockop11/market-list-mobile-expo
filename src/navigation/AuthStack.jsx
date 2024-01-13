@@ -1,28 +1,17 @@
-import { useState, useEffect } from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { onAuthStateChanged, getAuth } from "firebase/auth"
+import { useUser } from "../hooks/useUser"
 import { LoginScreen, RegisterScreen, ProfileScreen } from "../screens"
-
 
 const Stack = createNativeStackNavigator()
 
 export function AuthStack() {
-    const [userLogged, setUserLogged] = useState(null)
 
-
-    useEffect(() => {
-        const auth = getAuth()
-
-        onAuthStateChanged(auth, (user) => {
-            setUserLogged(user)
-        })
-    }, [])
-
+    const { user } = useUser()
 
     return (
         <Stack.Navigator>
             {
-                userLogged ? (
+                user ? (
                     <Stack.Screen
                         name='Profile'
                         component={ProfileScreen}

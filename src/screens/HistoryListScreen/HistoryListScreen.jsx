@@ -46,7 +46,6 @@ export function HistoryListScreen() {
     }
 
     const deleteList = async (id) => {
-        console.log(id)
         await deleteDoc(doc(db, `${auth.currentUser.email}`, id));
         setShowModal(prevState => !prevState)
         getHistoryList()
@@ -55,7 +54,6 @@ export function HistoryListScreen() {
     useEffect(() => {
         getHistoryList()
     }, [])
-
 
     return (
         <View>

@@ -5,15 +5,14 @@ import { doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 import { db } from "../../utils/firebase"
 
-export const ListDetail = ({ route, navigation }) => {
+export const ListDetail = ({ route }) => {
+  const auth = getAuth()
   const { id } = route.params
 
   const [listDetail, setListDetal] = useState({})
   const [productList, setProductList] = useState([])
   const [listDate, setListDate] = useState("")
   const [loader, setLoader] = useState(false)
-
-  const auth = getAuth()
 
   const getDetailData = async () => {
     setLoader(true)
@@ -37,7 +36,6 @@ export const ListDetail = ({ route, navigation }) => {
   useEffect(() => {
     getDetailData()
   }, [])
-
 
   if (loader) {
     return <Text>Cargando...</Text>
