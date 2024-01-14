@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native'
 import { ListItem, Button } from '@rneui/themed';
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
@@ -59,7 +59,7 @@ export function HistoryListScreen() {
         <View>
             <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', margin: 10 }}>Historial de Compras</Text>
             {
-                loader ? (<Text>Cargando ...</Text>)
+                loader ? (<ActivityIndicator size="large" color="#007bff" />)
                     : (
                         <ScrollView>
                             {
