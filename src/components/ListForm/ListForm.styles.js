@@ -31,7 +31,12 @@ export const styles = StyleSheet.create({
         borderRadius: 10
     },
     confirmModal: {
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    },
+    buttonContainer: {
         flexDirection: 'row',
+        justifyContent: 'center',
         justifyContent: 'space-around',
     },
     deleteBtn: {

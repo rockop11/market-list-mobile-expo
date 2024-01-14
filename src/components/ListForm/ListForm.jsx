@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useFormik } from 'formik'
 import { initialValues, validationSchema } from "./ListForm.data"
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Button, Text, ListItem, Input } from "@rneui/themed"
 import { Modal } from '../Modal/Modal'
 import { AddProductForm } from '../AddProductForm/AddProductForm';
@@ -103,8 +103,16 @@ export function ListForm() {
                     productList.length > 0 && (
                         <>
                             <View style={styles.btnContainer}>
-                                <Button title='Borrar lista' buttonStyle={styles.btnDeleteList} onPress={() => OpenCloseModal("delete")} />
-                                <Button title='Guardar lista' buttonStyle={styles.btnSaveList} onPress={() => OpenCloseModal("save")} />
+                                <Button
+                                    title='Borrar lista'
+                                    buttonStyle={styles.btnDeleteList}
+                                    onPress={() => OpenCloseModal("delete")}
+                                />
+                                <Button
+                                    title='Guardar lista'
+                                    buttonStyle={styles.btnSaveList}
+                                    onPress={() => OpenCloseModal("save")}
+                                />
                             </View>
                             <Text style={styles.totalText}>Total  ${totalPrice}</Text>
                         </>
@@ -152,33 +160,34 @@ export function ListForm() {
             <Modal show={showModal}>
                 <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 16 }}>{modalText}</Text>
                 {
-                    modalText === 'Desea guardar la lista?' && (
-                        <Input
-                            placeholder='Titulo'
-                            errorMessage={formik.errors.listTitle}
-                            onChangeText={(listTitle) => formik.setFieldValue('listTitle', listTitle)}
-                            value={formik.values.productName}
-
-                        />
-                    )
+                    loader ? (<ActivityIndicator size="" color="#007bff" />)
+                        : (
+                            <View style={styles.confirmModal}>
+                                {
+                                    modalText === 'Desea guardar la lista?' && (
+                                        <Input
+                                            placeholder='Titulo'
+                                            errorMessage={formik.errors.listTitle}
+                                            onChangeText={(listTitle) => formik.setFieldValue('listTitle', listTitle)}
+                                            value={formik.values.productName}
+                                        />
+                                    )
+                                }
+                                <View style={styles.buttonContainer}>
+                                    <Button title={buttonText}
+                                        buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
+                                        onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : formik.handleSubmit}
+                                        onLoading={formik.isSubmitting}
+                                    />
+                                    <Button
+                                        title='Cancelar'
+                                        buttonStyle={styles.cancelBtn}
+                                        onPress={OpenCloseModal}
+                                    />
+                                </View>
+                            </View>
+                        )
                 }
-                <View style={styles.confirmModal}>
-                    {
-                        loader ? <Text>Guardando...</Text>
-                            : <>
-                                <Button title={buttonText}
-                                    buttonStyle={modalText === 'Desea borrar la lista completa?' ? styles.deleteBtn : styles.saveBtn}
-                                    onPress={modalText === 'Desea borrar la lista completa?' ? deleteProducList : formik.handleSubmit}
-                                    onLoading={formik.isSubmitting}
-                                />
-                                <Button
-                                    title='Cancelar'
-                                    buttonStyle={styles.cancelBtn}
-                                    onPress={OpenCloseModal}
-                                />
-                            </>
-                    }
-                </View>
             </Modal>
         </View>
     )
