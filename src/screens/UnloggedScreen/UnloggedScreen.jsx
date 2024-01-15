@@ -1,9 +1,10 @@
 import { View, Text } from "react-native"
+import { styles } from "./UnloggedScree.styles"
 
 export const UnloggedScreen = () => {
     return (
-        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 24 }}>
-            <Text>Debes iniciar sesion...</Text>
+        <View style={styles.container}>
+            <Text style={styles.text}>Debes iniciar sesión.</Text>
         </View>
     )
 }

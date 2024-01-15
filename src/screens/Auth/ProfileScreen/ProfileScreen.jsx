@@ -43,7 +43,7 @@ export function ProfileScreen() {
         loading={loading}
       />
 
-      <Button title='Logout' onPress={handleLogout} containerStyle={styles.button} />
+      <Button title='Cerrar sesión' onPress={handleLogout} containerStyle={styles.button} />
     </View>
   )
 }
