@@ -6,7 +6,7 @@ import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 import { db } from "../../utils/firebase"
 import { Modal } from "../../components/Modal/Modal";
-// import { styles } from "./HistoryList.styles"
+import { styles } from "./HistoryList.styles"
 
 export function HistoryListScreen() {
 
@@ -16,6 +16,8 @@ export function HistoryListScreen() {
     const [historyList, setHistoryList] = useState([])
     const [loader, setLoader] = useState(false)
     const [showModal, setShowModal] = useState(false)
+
+    const [selectedProduct, setSelectedProduct] = useState('')
 
     const getHistoryList = async () => {
         setLoader(true)
@@ -37,16 +39,13 @@ export function HistoryListScreen() {
         setLoader(false)
     }
 
-    const goToListDetail = (id) => {
-        navigation.navigate("Detail", { id: id })
-    }
-
-    const showModalHandler = () => {
+    const showModalHandler = (id) => {
         setShowModal(prevState => !prevState)
+        setSelectedProduct(id)
     }
 
-    const deleteList = async (id) => {
-        await deleteDoc(doc(db, `${auth.currentUser.email}`, id));
+    const deleteList = async () => {
+        await deleteDoc(doc(db, `${auth.currentUser.email}`, selectedProduct));
         setShowModal(prevState => !prevState)
         getHistoryList()
     }
@@ -93,7 +92,7 @@ export function HistoryListScreen() {
                                             minSlideWidth={60}
                                             leftContent={() => (
                                                 <Button
-                                                    onPress={() => showModalHandler()}
+                                                    onPress={() => showModalHandler(item.id)}
                                                     icon={{ name: 'delete', color: 'white' }}
                                                     buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
                                                 />
@@ -103,21 +102,26 @@ export function HistoryListScreen() {
                                                 <ListItem.Title style={{ fontWeight: "bold" }}>{item.title} - ${item.total}</ListItem.Title>
                                                 <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
                                             </ListItem.Content>
-                                            <ListItem.Chevron size={24} onPress={() => goToListDetail(item.id)} />
+                                            <ListItem.Chevron
+                                                size={24}
+                                                onPress={() => navigation.navigate("Detail", { id: item.id })}
+                                            />
                                         </ListItem.Swipeable>
-
-
-                                        <Modal show={showModal}>
-                                            <Text>Modal Opened</Text>
-                                            <Button title='Cancelar' onPress={showModalHandler} />
-                                            <Button title='Eliminar' onPress={() => deleteList(item.id)} />
-                                        </Modal>
                                     </View>
                                 ))
                             }
                         </ScrollView>
                     )
             }
+            <Modal show={showModal}>
+                <View style={styles.modal}>
+                    <Text style={{fontSize: 18}}>Desea eliminar la lista?</Text>
+                    <View style={styles.btnContainer}>
+                        <Button title='Cancelar' onPress={showModalHandler} buttonStyle={{ borderRadius: 10 }} />
+                        <Button title='Eliminar' onPress={deleteList} buttonStyle={{ backgroundColor: 'red', borderRadius: 10 }} />
+                    </View>
+                </View>
+            </Modal>
         </View >
     )
 }

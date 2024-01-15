@@ -1,23 +1,17 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    itemContainer: {
-        // borderWidth: 1,
-        // borderColor: "red",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 16,
-        width: '100%',
+    modal: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 24,
     },
-    listItem: { 
-        // borderWidth: 1, 
-        width: '90%',
+    btnContainer: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#ffffff',
-        borderRadius: 10
+        width: '100%',
     }
 })
